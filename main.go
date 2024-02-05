@@ -14,8 +14,8 @@ func main() {
 	smtpPass := "your-email-password"
 
 	// Parameters for email
-	from := "your_email.com"
-	to := "to_email.com"
+	from := "christian.ngonoabanda@ynov.com"
+	to := "christianmanga384@gmail.com"
 	subject := "Test email"
 	body := "Hello, this is a test email"
 
