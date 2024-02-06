@@ -1,0 +1,4 @@
+programme pour trier automatiquement les fichier d'un repertoire a l'autre 
+    - ajout d'unt bloom filter pour etre sur de ce que on deplace 
+        - ajout d'une fonction ajout auomatique au bloom filter 
+    - ajout d'une verification automatique a la fin si il n'y a pas de doublon en verifiant le hashage des ficher

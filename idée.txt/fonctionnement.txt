@@ -1,0 +1,22 @@
+1. client lance le programme ou le programme se lance automatiquement a periode reguliere ou programmer a l'avance 
+    -go run main.go
+2. le programme vas analyser les fichier
+    - leurs noms
+    - leurs type 
+        - txt
+        - jpeg
+        - exe
+3. le programme vas établir des similitude entre les fichier 
+    similitude de : 
+        - type de fichier / taille
+        - nom
+        - contenu
+4. le programme vas rassembler et crée des sous-fichier au besoin 
+    -  quand il y aura un fichier avec quelque chose de nouveau
+        - nouveau type 
+        - nouveau nom
+5. le programme vas finir quand il aura estimer avoir respecter les conditions 
+    - respecter les filtres :
+        - nom du fichier a trier 
+        - verification des doublons 
+        - 
