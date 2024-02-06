@@ -1,74 +1,83 @@
 package main
 
 import (
-	"crypto/tls"
 	"fmt"
-	"net/smtp"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
-	// parameters for smtp server
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587" // or use "465 as smtpPort
-	smtpUser := "your-email@gmail.com"
-	smtpPass := "your-email-password"
+	// Replace "/" with the path of the directory you want to sort
+	rootDir := "\\wsl.localhost/Ubuntu-20.04/home/christian/Documents/"
 
-	// Parameters for email
-	from := "christian.ngonoabanda@ynov.com"
-	to := "christianmanga384@gmail.com"
-	subject := "Test email"
-	body := "Hello, this is a test email"
+	err := filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 
-	// Configuration TLS for smtp server connection
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: true,
-		ServerName:         smtpHost,
-	}
+		// Ignore directories and hidden files or folders
+		if path == rootDir || info.IsDir() || string(path[len(path)-1]) == "~" {
+			return nil
+		}
+		// Get the extension of the current file
+		extension := filepath.Ext(info.Name())
+		folderPath := filepath.Join(rootDir, "Documents") + string(os.PathSeparator)
 
-	// Connect to the smtp server
-	client, err := smtp.Dial(fmt.Sprintf("%s:%d", smtpHost, smtpPort))
+		// Set the destination directory based on the extension
+		switch extension {
+		case ".pdf":
+			folderPath += "PDF"
+		case ".docx", ".doc":
+			folderPath += "Word"
+		case ".xlsx", ".xls":
+			folderPath += "Excel"
+		case ".pptx", ".ppt":
+			folderPath += "PowerPoint"
+		case ".txt":
+			folderPath += "Text"
+		case ".jpg", ".jpeg", ".png", ".gif":
+			folderPath += "Images"
+		case ".mp3", ".wav", ".flac":
+			folderPath += "Audio"
+		case ".mp4", ".avi", ".mkv":
+			folderPath += "Video"
+		default:
+			folderPath += "Others"
+		}
+
+		// Create the destination directory if it doesn't exist yet
+		if _, err := os.Stat(folderPath); os.IsNotExist(err) {
+			_ = os.MkdirAll(folderPath, os.ModePerm)
+		}
+
+		// Create the destination path for the current file
+		destPath := strings.ReplaceAll(strings.TrimPrefix(path, rootDir), "\\", "/")
+		destFile := folderPath + string(os.PathSeparator) + filepath.Base(destPath)
+		// Copy the file to its new location
+		err = os.Rename(path, destFile)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		} else {
+			fmt.Printf("File sorted: %s -> %s\n", path, destFile)
+		}
+
+		// Move the file to its corresponding folder
+		err = os.Rename(path, folderPath+info.Name())
+		if err != nil {
+			fmt.Println("Error:", err)
+			return err
+		}
+		return nil
+
+	})
+	// Check if there was an error while walking the directory
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
-	}
 
-	// Authentification to the smtp server
-
-	auth := smtp.PlainAuth("", smtpUser, smtpPass, smtpHost)
-	if err := client.Auth(auth); err != nil {
-		fmt.Println("Error:", err)
-		return
+	} else {
+		fmt.Println("Files sorted successfully")
 	}
-
-	// Start TLS
-	if err := client.StartTLS(tlsConfig); err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	// Send the email
-	if err := client.Mail(from); err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	if err := client.Rcpt(to); err != nil {
-		fmt.Println("Error, err")
-		return
-	}
-	w, err := client.Data()
-	if err != nil {
-		fmt.Println("Error:", err)
-	}
-	_, err = w.Write([]byte("To: " + to + "\r\n" + "Subject: " + subject + "\r\n" + "\r\n" + body))
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	err = w.Close()
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	client.Quit()
-	fmt.Println("Email sent successfully")
 }
