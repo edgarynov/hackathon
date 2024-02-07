@@ -12,8 +12,8 @@ func bloomfilter() {
 	//Startpfad oder der Filter muss die Dateien nehmen, um sie in den Filter zu setzen
 	sourceDir := "chemin début"
 
-	//setup du filtre a 500 éléments et 0.1% de chance d'avoir un faux positif
-	filter := bloom.NewWithEstimates(500, 0.001)
+	//setup du filtre a 500 éléments et 0.01% de chance d'avoir un faux positif
+	filter := bloom.NewWithEstimates(500, 0.0001)
 
 	err := filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
