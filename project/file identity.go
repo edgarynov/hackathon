@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func main() {
+func identity() {
 	sourceDir := "chemin début"
 	destinationDir := "chemin arriver"
 
