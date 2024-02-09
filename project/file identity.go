@@ -10,7 +10,7 @@ import (
 
 func identity() {
 	sourceDir := "chemin début"
-	destinationDir := "chemin arriver"
+	destinationDir := "chemin fin"
 
 	sourceFileHashes := make(map[string]string)
 	filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
