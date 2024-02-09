@@ -69,3 +69,5 @@ func checksum(filePath string) (string, error) {
 
 	return fmt.Sprintf("%x", hash.Sum(nil)), nil
 }
+
+//Ich wusste nicht, ob ich einen fünften Satz auf Deutsch schreiben sollte, also wird sie hier sein.
